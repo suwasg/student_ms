@@ -15,7 +15,7 @@ class Student:
         # first image
         img=Image.open(r"images\std1.png")
         # img=Image.open("images/std1.png")
-        img=img.resize((450, 160), Image.ANTIALIAS)
+        img=img.resize((450, 160), Image.LANCZOS)
         self.photoimg=ImageTk.PhotoImage(img)
 
         self.btn_1=Button(self.root, image=self.photoimg, cursor="hand2")
@@ -23,7 +23,7 @@ class Student:
         # second image
         img_2=Image.open(r"images\std2.png")
         # img=Image.open("images/std1.png")
-        img_2=img_2.resize((450, 160), Image.ANTIALIAS)
+        img_2=img_2.resize((450, 160), Image.LANCZOS)
         self.photoimg_2=ImageTk.PhotoImage(img_2)
 
         self.btn_2=Button(self.root, image=self.photoimg_2, cursor="hand2")
@@ -31,7 +31,7 @@ class Student:
         # third image
         img_3=Image.open(r"images\std3.png")
         # img=Image.open("images/std1.png")
-        img_3=img_3.resize((450, 160), Image.ANTIALIAS)
+        img_3=img_3.resize((450, 160), Image.LANCZOS)
         self.photoimg_3=ImageTk.PhotoImage(img_3)
 
         self.btn_3=Button(self.root, image=self.photoimg_3, cursor="hand2")
@@ -40,7 +40,7 @@ class Student:
         # bg_image
         img_4=Image.open(r"images\college1.png")
         # img=Image.open("images/std1.png")
-        img_4=img_4.resize((1450, 710), Image.ANTIALIAS)
+        img_4=img_4.resize((1450, 710), Image.LANCZOS)
         self.photoimg_4=ImageTk.PhotoImage(img_4)
 
         bg_label=Label(self.root, image=self.photoimg_4, bd=2, relief=RIDGE)
@@ -61,7 +61,8 @@ class Student:
 
         # img_5
         img_5=Image.open(r"images\std4.png")
-        img_5=img_5.resize((535, 120), Image.ANTIALIAS)
+        img_5=img_5.resize((535, 120), Image.LANCZOS)
+        # img_5=img_5.resize((535, 120), Image.ANTIALIAS) previous PIL version.
         self.photoimg_5=ImageTk.PhotoImage(img_5)
 
         my_img=Label(left_frame, image=self.photoimg_5, bd=2, relief=RIDGE)
@@ -204,6 +205,27 @@ class Student:
 
 
 
+        # button frame
+        btn_frame=Frame(left_frame, bd=2, relief=RIDGE, bg='white')
+        btn_frame.place(x=0, y=400, width=650, height=38)
+
+        
+        btn_add=Button(btn_frame, text="Save",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_add.grid(row=0, column=0, padx=4, )
+        
+        btn_update=Button(btn_frame, text="Update",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_update.grid(row=0, column=1, padx=4, )
+
+        btn_delete=Button(btn_frame, text="Delete",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_delete.grid(row=0, column=2, padx=4, )
+
+        btn_reset=Button(btn_frame, text="Reset",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_reset.grid(row=0, column=3, padx=4, )
+
+
+
+
+
 
 
         # right frame
@@ -211,6 +233,94 @@ class Student:
         right_frame.place(x=585, y=10, width=610, height=470)
 
 
+        # img_6
+        img_6=Image.open(r"images\std2.png")
+        img_6=img_6.resize((600, 170), Image.LANCZOS)
+        # img_5=img_5.resize((535, 120), Image.ANTIALIAS) previous PIL version.
+        self.photoimg_6=ImageTk.PhotoImage(img_6)
+
+        my_img=Label(right_frame, image=self.photoimg_6, bd=2, relief=RIDGE)
+        my_img.place(x=0, y=0, width=600, height=170)
+
+        # search frame
+        search_frame=LabelFrame(right_frame, bd=4, relief=RIDGE, padx=2, pady=4, fg="red",bg='white',  text="Search Student Information", font=("times new roman", 12, 'bold'))
+        search_frame.place(x=0, y=170, width=600, height=60)
+
+        # search label
+        search_by_label=Label(search_frame, text="search by: ", font=("arial", 12, 'bold'), bg="black", fg="white" )
+        search_by_label.grid(row=0, column=0, padx=5, sticky=W)
+
+        # combobox
+        search_combo=ttk.Combobox(search_frame, font=("halvetica", 12, 'bold') , width=13, state='readonly')
+        search_combo['value']=("Select Options", "Roll No", "Phone", "Student Id")
+        search_combo.current(0)
+        search_combo.grid(row=0, column=1, padx=5, sticky=W) # sticky=West
+
+        # entry field
+        search_entry=ttk.Entry(search_frame,font=("arial", 12, 'bold'), width=13 )
+        search_entry.grid(row=0, column=2, sticky=W, padx=4)
+
+        # search button
+        btn_search=Button(search_frame, text="Search",font=("times new roman", 12, 'bold'), width=10, bg='blue', fg='white')
+        btn_search.grid(row=0, column=3, padx=2, )
+
+        btn_showall=Button(search_frame, text="Show All",font=("times new roman", 12, 'bold'), width=10, bg='blue', fg='white')
+        btn_showall.grid(row=0, column=4, padx=2, )
+
+        # --------------------Student Table and Scroll bar-----------------
+        table_frame=Frame(right_frame, bd=4, relief=RIDGE)
+        table_frame.place(x=0, y=235, width=600, height=200) # frame bhanda bahira januparda place use, bhitra grid.
+
+        # scrollbar
+        scroll_x=ttk.Scrollbar(table_frame, orient=HORIZONTAL)
+        scroll_y=ttk.Scrollbar(table_frame, orient=VERTICAL)
+
+        # treeview
+        self.student_table=ttk.Treeview(table_frame, columns=("dept", 'course', 'year', 'sem', 'id', 'name', 'div', 'roll', 'gender', 'dob', 'email', 'phone','address', 'teacher'), xscrollcommand=scroll_x.set, yscrollcommand=scroll_y.set)
+
+        scroll_x.pack(side=BOTTOM, fill=X)
+        scroll_y.pack(side=RIGHT, fill=Y)
+
+        # config scrollbar with table
+        scroll_x.config(command=self.student_table.xview)
+        scroll_y.config(command=self.student_table.yview)
+
+        # 
+        self.student_table.heading('dept', text='Department')
+        self.student_table.heading('course', text='Course')
+        self.student_table.heading('year', text='Year')
+        self.student_table.heading('sem', text='Semester')
+        self.student_table.heading('id', text='StudentId')
+        self.student_table.heading('name', text='Student Name')
+        self.student_table.heading('div', text='Class Div')
+        self.student_table.heading('roll', text='Roll No')
+        self.student_table.heading('gender', text='Gender')
+        self.student_table.heading('dob', text='DOB')
+        self.student_table.heading('email', text='Email')
+        self.student_table.heading('phone', text='Phone No')
+        self.student_table.heading('address', text='Address')
+        self.student_table.heading('teacher', text='Teacher Name')
+
+        self.student_table['show']='headings' # removes the first empty heading.
+
+        # heading width set
+        self.student_table.column("dept", width=100)
+        self.student_table.column("course", width=100)
+        self.student_table.column("year", width=100)
+        self.student_table.column("sem", width=100)
+        self.student_table.column("id", width=100)
+        self.student_table.column("name", width=100)
+        self.student_table.column("div", width=100)
+        self.student_table.column("roll", width=100)
+        self.student_table.column("gender", width=100)
+        self.student_table.column("dob", width=100)
+        self.student_table.column("email", width=100)
+        self.student_table.column("phone", width=100)
+        self.student_table.column("address", width=100)
+        self.student_table.column("teacher", width=100)
+
+        self.student_table.pack(fill=BOTH, expand=1)
+        
 
 
 if __name__=="__main__":
