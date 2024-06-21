@@ -1,10 +1,11 @@
 from tkinter import * 
-from tkinter import ttk 
 from PIL import Image, ImageTk 
 import os
 import mysql.connector # mysql-connector-python
-from tkinter import messagebox
+from tkinter import ttk, messagebox, filedialog
+import database_operations as db_ops
 from dotenv import load_dotenv
+import cv2
 
 # Load environment variables from .env file
 load_dotenv()
@@ -50,7 +51,7 @@ class Student:
         img=img.resize((450, 160), Image.LANCZOS)
         self.photoimg=ImageTk.PhotoImage(img)
 
-        self.btn_1=Button(self.root, image=self.photoimg, cursor="hand2")
+        self.btn_1=Button(self.root,command=self.open_image, image=self.photoimg, cursor="hand2")
         self.btn_1.place(x=0, y=0, width=450, height=160)
         # second image
         img_2=Image.open(r"images\std2.png")
@@ -58,7 +59,7 @@ class Student:
         img_2=img_2.resize((450, 160), Image.LANCZOS)
         self.photoimg_2=ImageTk.PhotoImage(img_2)
 
-        self.btn_2=Button(self.root, image=self.photoimg_2, cursor="hand2")
+        self.btn_2=Button(self.root,command=self.open_image2, image=self.photoimg_2, cursor="hand2")
         self.btn_2.place(x=450, y=0, width=450, height=160)
         # third image
         img_3=Image.open(r"images\std3.png")
@@ -66,7 +67,7 @@ class Student:
         img_3=img_3.resize((450, 160), Image.LANCZOS)
         self.photoimg_3=ImageTk.PhotoImage(img_3)
 
-        self.btn_3=Button(self.root, image=self.photoimg_3, cursor="hand2")
+        self.btn_3=Button(self.root,command=self.open_image3, image=self.photoimg_3, cursor="hand2")
         self.btn_3.place(x=900, y=0, width=450, height=160)
 
         # bg_image
@@ -245,13 +246,13 @@ class Student:
         btn_add=Button(btn_frame, text="Save", command=self.add_data,font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
         btn_add.grid(row=0, column=0, padx=4, )
         
-        btn_update=Button(btn_frame, text="Update",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_update=Button(btn_frame, text="Update", command=self.update_data, font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
         btn_update.grid(row=0, column=1, padx=4, )
 
-        btn_delete=Button(btn_frame, text="Delete",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_delete=Button(btn_frame, text="Delete", command=self.delete_data, font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
         btn_delete.grid(row=0, column=2, padx=4, )
 
-        btn_reset=Button(btn_frame, text="Reset",font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
+        btn_reset=Button(btn_frame, text="Reset", command=self.reset_data, font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
         btn_reset.grid(row=0, column=3, padx=4, )
 
 
@@ -282,21 +283,23 @@ class Student:
         search_by_label=Label(search_frame, text="search by: ", font=("arial", 12, 'bold'), bg="black", fg="white" )
         search_by_label.grid(row=0, column=0, padx=5, sticky=W)
 
-        # combobox
-        search_combo=ttk.Combobox(search_frame, font=("halvetica", 12, 'bold') , width=13, state='readonly')
-        search_combo['value']=("Select Options", "Roll No", "Phone", "Student Id")
+        # search text combobox
+        self.var_search_combo = StringVar()
+        search_combo=ttk.Combobox(search_frame,textvariable=self.var_search_combo, font=("halvetica", 12, 'bold') , width=13, state='readonly')
+        search_combo['value']=("Select Options",'name', "roll",'section', "phone", "student_id", 'dept', 'course', 'semester', 'teacher', 'address', 'dob', 'email', 'gender')
         search_combo.current(0)
         search_combo.grid(row=0, column=1, padx=5, sticky=W) # sticky=West
 
-        # entry field
-        search_entry=ttk.Entry(search_frame,font=("arial", 12, 'bold'), width=13 )
+        # text search/ entry field
+        self.var_search = StringVar()
+        search_entry=ttk.Entry(search_frame, textvariable=self.var_search,font=("arial", 12, 'bold'), width=13 )
         search_entry.grid(row=0, column=2, sticky=W, padx=4)
 
         # search button
-        btn_search=Button(search_frame, text="Search",font=("times new roman", 12, 'bold'), width=10, bg='blue', fg='white')
+        btn_search=Button(search_frame, command=self.search_data, text="Search",font=("times new roman", 12, 'bold'), width=10, bg='blue', fg='white')
         btn_search.grid(row=0, column=3, padx=2, )
 
-        btn_showall=Button(search_frame, text="Show All",font=("times new roman", 12, 'bold'), width=10, bg='blue', fg='white')
+        btn_showall=Button(search_frame,command=self.fetch_data, text="Show All",font=("times new roman", 12, 'bold'), width=10, bg='blue', fg='white')
         btn_showall.grid(row=0, column=4, padx=2, )
 
         # --------------------Student Table and Scroll bar-----------------
@@ -352,17 +355,17 @@ class Student:
         self.student_table.column("teacher", width=100)
 
         self.student_table.pack(fill=BOTH, expand=1)
+        self.student_table.bind("<ButtonRelease>", self.get_cursor)
         self.fetch_data()
         
     
 
     def add_data(self):
+        # db_ops.add_data(self)
         if (self.var_dept.get()=='' or self.var_email.get()=='' or self.var_std_id.get()=='' or self.var_address.get()=='' or self.var_std_name.get()=='' or self.var_semester.get()=='' or self.var_roll.get()=='' or self.var_gender.get()=='' or self.var_div.get()=='' or self.var_phone.get()=='' or self.var_teacher.get()=='' or self.var_dob.get()=='' or self.var_course.get()=='' or self.var_year.get()=='' ):
             messagebox.showerror("Error", "All Fields are required.")
         else:
             try:
-                # conn=mysql.connector.connect(host='localhost', port='3307', username='root', password='Suwas@2281.sg', database='smsdata')
-                # Connect to the database
                 conn = mysql.connector.connect(
                     host=db_host,
                     port=db_port,
@@ -412,6 +415,327 @@ class Student:
                 self.student_table.insert("", END, values=i)
             conn.commit()
         conn.close()
+
+      # get cursor
+    def get_cursor(self, event=""):
+        cursor_row=self.student_table.focus()
+        content=self.student_table.item(cursor_row)
+        data=content['values']
+
+        self.var_std_id.set(data[0])
+        self.var_dept.set(data[1])
+        self.var_course.set(data[2])
+        self.var_year.set(data[3])
+        self.var_semester.set(data[4])
+        self.var_std_name.set(data[5])
+        self.var_div.set(data[6])
+        self.var_roll.set(data[7])
+        self.var_gender.set(data[8])
+        self.var_dob.set(data[9])
+        self.var_email.set(data[10])
+        self.var_phone.set(data[11])
+        self.var_address.set(data[12])
+        self.var_teacher.set(data[13])
+    
+    # update data
+    def update_data(self):
+        if (self.var_dept.get()=='' or self.var_email.get()=='' or self.var_std_id.get()=='' or self.var_address.get()=='' or self.var_std_name.get()=='' or self.var_semester.get()=='' or self.var_roll.get()=='' or self.var_gender.get()=='' or self.var_div.get()=='' or self.var_phone.get()=='' or self.var_teacher.get()=='' or self.var_dob.get()=='' or self.var_course.get()=='' or self.var_year.get()=='' ):
+            messagebox.showerror("Error", "All Fields are required.")
+        else:
+            try:
+                update=messagebox.askyesno("Update", "Are You Sure Update this Student Data?", parent=self.root)
+                if update>0:
+                    conn = mysql.connector.connect(
+                        host=db_host,
+                        port=db_port,
+                        user=db_user,
+                        password=db_password,
+                        database=db_name
+                    )
+                    my_cursor=conn.cursor()
+                    my_cursor.execute("UPDATE students SET dept=%s, course=%s, year=%s, semester=%s, name=%s, section=%s, roll=%s, gender=%s, dob=%s, email=%s, phone=%s, address=%s, teacher=%s  WHERE student_id=%s", (
+                        self.var_dept.get(), 
+                        self.var_course.get(), 
+                        self.var_year.get(),
+                        self.var_semester.get(),
+                        self.var_std_name.get(),
+                        self.var_div.get(),
+                        self.var_roll.get(),
+                        self.var_gender.get(),
+                        self.var_dob.get(),
+                        self.var_email.get(),
+                        self.var_phone.get(),
+                        self.var_address.get(),
+                        self.var_teacher.get(),
+                        self.var_std_id.get()
+
+                    )
+                    )
+                else:
+                    if not update:
+                        return 
+                conn.commit()
+                self.fetch_data()
+                conn.close()
+
+                messagebox.showinfo("Success", "Student data has been successfully updated.", parent=self.root)
+            except Exception as e:
+                messagebox.showerror("Error", f"Due to: {str(e)}.", parent=self.root) 
+    
+    # delete data 
+    def delete_data(self):
+        if (self.var_dept.get()=='' or self.var_email.get()=='' or self.var_std_id.get()=='' or self.var_address.get()=='' or self.var_std_name.get()=='' or self.var_semester.get()=='' or self.var_roll.get()=='' or self.var_gender.get()=='' or self.var_div.get()=='' or self.var_phone.get()=='' or self.var_teacher.get()=='' or self.var_dob.get()=='' or self.var_course.get()=='' or self.var_year.get()=='' ):
+            messagebox.showerror("Error", "All Fields are required.", parent=self.root)
+        else:
+            try:
+                delete=messagebox.askyesno("Delete", "Are you sure delete this student data? ", parent=self.root)
+                if delete>0:
+                    conn = mysql.connector.connect(
+                        host=db_host,
+                        port=db_port,
+                        user=db_user,
+                        password=db_password,
+                        database=db_name
+                    )
+                    my_cursor=conn.cursor()
+                    # my_cursor.execute("")
+                    sql="DELETE FROM students WHERE student_id=%s"
+                    value=(self.var_std_id.get(),)
+                    my_cursor.execute(sql, value)
+                else:
+                    if not delete:
+                        return 
+                conn.commit()
+                self.fetch_data()
+                self.reset_data()
+                conn.close()
+                messagebox.showinfo("Delete", "Student has been deleted.", parent=self.root)
+            except Exception as e:
+                messagebox.showerror("Error", f"Due to: {str(e)}.", parent=self.root) 
+
+    # reset data
+    def reset_data(self):
+        self.var_std_id.set("")
+        self.var_dept.set('Select Department')
+        self.var_course.set('Select Course')
+        self.var_year.set('Select Year')
+        self.var_semester.set('Select Semester')
+        self.var_std_name.set("")
+        self.var_div.set("Select Section")
+        self.var_roll.set("")
+        self.var_gender.set("Select Gender")
+        self.var_dob.set("")
+        self.var_email.set("")
+        self.var_phone.set("")
+        self.var_address.set("")
+        self.var_teacher.set("")
+    
+    # search data
+    def search_data(self):
+        if self.var_search_combo.get() == "" or self.var_search.get() == "":
+            messagebox.showerror("Error", "Please Select Option.", parent=self.root)
+        else:
+            try:
+                conn = mysql.connector.connect(
+                    host=db_host,
+                    port=db_port,
+                    user=db_user,
+                    password=db_password,
+                    database=db_name
+                )
+                my_cursor = conn.cursor()
+
+                # List of valid columns to prevent SQL injection
+                valid_columns = ["student_id",'section', "name", "roll", "dept", "course", "year", "semester", "gender", "dob", "email", "phone", "address", "teacher"]
+
+                column_name = str(self.var_search_combo.get())
+                search_value = str(self.var_search.get())
+
+                if column_name not in valid_columns:
+                    messagebox.showerror("Error", "Invalid search column", parent=self.root)
+                else:
+                    # Parameterized query to prevent SQL injection
+                    query = f"SELECT * FROM students WHERE {column_name} = %s"
+                    my_cursor.execute(query, (search_value,))
+                    data = my_cursor.fetchall()
+
+                    if len(data) != 0:
+                        self.student_table.delete(*self.student_table.get_children())
+                        for i in data:
+                            self.student_table.insert("", END, values=i)
+                    else:
+                        messagebox.showinfo("Info", "No record found", parent=self.root)
+
+                conn.commit()
+            except Exception as e:
+                messagebox.showerror("Error", f"Due to: {str(e)}.", parent=self.root)
+            finally:
+            # Ensure the connection is closed even if an error occurs
+                if conn.is_connected():
+                    conn.close()
+
+    def open_image(self):
+        try:
+            # Open file dialog to select an image
+            flnm = filedialog.askopenfilename(
+                initialdir=os.getcwd(),
+                title="Open Images",
+                filetypes=(('JPG File', "*.jpg"), ("PNG File", "*.png"), ("JPEG File", "*.jpeg"), ("All Files", "*.*"))
+            )
+
+            # Check if a file was selected
+            if flnm:
+                # Open and resize the selected image
+                img_b = Image.open(flnm)
+                img_browse = img_b.resize((450, 160), Image.LANCZOS)
+
+                # Convert the image to PhotoImage for tkinter
+                self.photoimg_browse = ImageTk.PhotoImage(img_browse)
+
+                # Update the button image (ensure btn_1 is properly initialized)
+                if self.btn_1 is not None:
+                    self.btn_1.config(image=self.photoimg_browse)
+                else:
+                    messagebox.showerror("Error", "Button not initialized.", parent=self.root)
+            else:
+                messagebox.showinfo("Info", "No file selected.", parent=self.root)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to open image: {str(e)}", parent=self.root)
+
+    def open_image2(self):
+        try:
+            # Open file dialog to select an image
+            flnm2 = filedialog.askopenfilename(
+                initialdir=os.getcwd(),
+                title="Open Images",
+                filetypes=(('JPG File', "*.jpg"), ("PNG File", "*.png"), ("JPEG File", "*.jpeg"), ("All Files", "*.*"))
+            )
+
+            # Check if a file was selected
+            if flnm2:
+                # Open and resize the selected image
+                img_b2 = Image.open(flnm2)
+                img_browse2 = img_b2.resize((450, 160), Image.LANCZOS)
+
+                # Convert the image to PhotoImage for tkinter
+                self.photoimg_browse2 = ImageTk.PhotoImage(img_browse2)
+
+                # Update the button image (ensure btn_1 is properly initialized)
+                self.btn_2.config(image=self.photoimg_browse2)
+              
+            else:
+                messagebox.showinfo("Info", "No file selected.", parent=self.root)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to open image: {str(e)}", parent=self.root)
+
+    def open_image3(self):
+        try:
+            # Open file dialog to select an image
+            flnm3 = filedialog.askopenfilename(
+                initialdir=os.getcwd(),
+                title="Open Images",
+                filetypes=(('JPG File', "*.jpg"), ("PNG File", "*.png"), ("JPEG File", "*.jpeg"), ("All Files", "*.*"))
+            )
+
+            # Check if a file was selected
+            if flnm3:
+                # Open and resize the selected image
+                img_b3 = Image.open(flnm3)
+                img_browse3 = img_b3.resize((450, 160), Image.LANCZOS)
+
+                # Convert the image to PhotoImage for tkinter
+                self.photoimg_browse3 = ImageTk.PhotoImage(img_browse3)
+
+                # Update the button image (ensure btn_1 is properly initialized)
+                if self.btn_3 is not None:
+                    self.btn_3.config(image=self.photoimg_browse3)
+                else:
+                    messagebox.showerror("Error", "Button not initialized.", parent=self.root)
+            else:
+                messagebox.showinfo("Info", "No file selected.", parent=self.root)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to open image: {str(e)}", parent=self.root)
+
+    
+    
+    def generate_dataset(self):
+        if self.var_dept.get() == "" or self.var_email.get() == "" or self.var_id.get() == "":
+            messagebox.showerror("Error", "All Fields are required", parent=self.root)
+        else:
+            try:
+                conn = mysql.connector.connect(
+                    host=db_host,
+                    port=db_port,
+                    user=db_user,
+                    password=db_password,
+                    database=db_name
+                    )
+
+                my_cursor=conn.cursor()
+                my_cursor.execute("SELECT * FROM sutdents")
+                myresult = my_cursor.fetchall()
+                id = 0
+                for x in myresult:
+                    id += 1
+                my_cursor.execute("UPDATE sutdents SET dept=%s, course=%s, year=%s, semester=%s, name=%s, section=%s, roll=%s, gender=%s, dob=%s, email=%s, phone=%s, address=%s, teacher=%s WHERE id=%s", (
+                    self.var_dept.get(),
+                    self.var_course.get(),
+                    self.var_year.get(),
+                    self.var_semester.get(),
+                    self.var_std_name.get(),
+                    self.var_div.get(),
+                    self.var_roll.get(),
+                    self.var_gender.get(),
+                    self.var_dob.get(),
+                    self.var_email.get(),
+                    self.var_phone.get(),
+                    self.var_address.get(),
+                    self.var_teacher.get(),
+                    self.var_std_id.get() == id + 1
+                ))
+                conn.commit()
+                self.fetch_data()
+                self.reset_data()
+                conn.close()
+
+                # ============ Load Predefined data on face frontals from opencv ========
+                face_classifier = cv2.CascadeClassifier("haarcascade_frontalface_default.xml")
+
+                def face_cropped(img):
+                    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+                    faces = face_classifier.detectMultiScale(gray, 1.3, 5)
+                    # scaling factor = 1.3
+                    # minimum neighbor = 5
+                    for (x, y, w, h) in faces:
+                        face_cropped = img[y:y + h, x:x + w]
+                        return face_cropped
+
+                cap = cv2.VideoCapture(0)
+                img_id = 0
+                while True:
+                    ret, my_frame = cap.read()
+                    if face_cropped(my_frame) is not None:
+                        img_id += 1
+                        face = cv2.resize(face_cropped(my_frame), (450, 450))
+                        face = cv2.cvtColor(face, cv2.COLOR_BGR2GRAY)
+                        file_name_path = "data/user." + str(id) + "." + str(img_id) + ".jpg"
+                        cv2.imwrite(file_name_path, face)
+                        cv2.putText(face, str(img_id), (50, 50), cv2.FONT_HERSHEY_COMPLEX, 2, (0, 255, 0), 2)
+                        cv2.imshow("Cropped Face", face)
+
+                    if cv2.waitKey(1) == 13 or int(img_id) == 100:
+                        break
+                cap.release()
+                cv2.destroyAllWindows()
+                messagebox.showinfo("Result", "Generating data sets completed")
+
+            except Exception as es:
+                messagebox.showerror("Error", f"Due To : {str(es)}", parent=self.root)
+
+
 
 
 if __name__=="__main__":
