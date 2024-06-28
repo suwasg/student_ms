@@ -631,6 +631,7 @@ class Student:
             messagebox.showerror("Error", f"Failed to open image: {str(e)}", parent=self.root)
 
     def open_image3(self):
+        "function to handle the third image"
         try:
             # Open file dialog to select an image
             flnm3 = filedialog.askopenfilename(
