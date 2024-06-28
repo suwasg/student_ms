@@ -532,6 +532,7 @@ class Student:
     
     # search data
     def search_data(self):
+        "Search the data from database."
         if self.var_search_combo.get() == "" or self.var_search.get() == "":
             messagebox.showerror("Error", "Please Select Option.", parent=self.root)
         else:
