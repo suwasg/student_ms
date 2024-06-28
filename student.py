@@ -515,6 +515,7 @@ class Student:
 
     # reset data
     def reset_data(self):
+        "function to reset the data in GUI"
         self.var_std_id.set("")
         self.var_dept.set('Select Department')
         self.var_course.set('Select Course')
