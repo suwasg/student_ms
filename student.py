@@ -484,6 +484,7 @@ class Student:
     
     # delete data 
     def delete_data(self):
+        "function to delete the data from db"
         if (self.var_dept.get()=='' or self.var_email.get()=='' or self.var_std_id.get()=='' or self.var_address.get()=='' or self.var_std_name.get()=='' or self.var_semester.get()=='' or self.var_roll.get()=='' or self.var_gender.get()=='' or self.var_div.get()=='' or self.var_phone.get()=='' or self.var_teacher.get()=='' or self.var_dob.get()=='' or self.var_course.get()=='' or self.var_year.get()=='' ):
             messagebox.showerror("Error", "All Fields are required.", parent=self.root)
         else:
