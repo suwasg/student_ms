@@ -575,6 +575,7 @@ class Student:
                     conn.close()
 
     def open_image(self):
+        "function to handle the first image"
         try:
             # Open file dialog to select an image
             flnm = filedialog.askopenfilename(
@@ -604,7 +605,7 @@ class Student:
             messagebox.showerror("Error", f"Failed to open image: {str(e)}", parent=self.root)
 
     def open_image2(self):
-        "function to handle the third image"
+        "function to handle the second image"
         try:
             # Open file dialog to select an image
             flnm2 = filedialog.askopenfilename(
