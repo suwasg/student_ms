@@ -361,6 +361,7 @@ class Student:
     
 
     def add_data(self):
+        'function to add data to db'
         # db_ops.add_data(self)
         if (self.var_dept.get()=='' or self.var_email.get()=='' or self.var_std_id.get()=='' or self.var_address.get()=='' or self.var_std_name.get()=='' or self.var_semester.get()=='' or self.var_roll.get()=='' or self.var_gender.get()=='' or self.var_div.get()=='' or self.var_phone.get()=='' or self.var_teacher.get()=='' or self.var_dob.get()=='' or self.var_course.get()=='' or self.var_year.get()=='' ):
             messagebox.showerror("Error", "All Fields are required.")
@@ -398,6 +399,7 @@ class Student:
                 messagebox.showerror("Error", f"Due to: {str(e)}.", parent=self.root)
     
     def fetch_data(self):
+        'function to fetch/retrive the data from db'
         conn = mysql.connector.connect(
                 host=db_host,
                 port=db_port,
