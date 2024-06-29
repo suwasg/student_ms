@@ -67,13 +67,15 @@ class LoginWindow:
         password = self.txt_pass.get()
 
          # Check if the credentials are valid
-        valid_credentials = any(user['username'] == username and user['password'] == password for user in credentials['users'])
+        user = next((user for user in credentials['users'] if user['username'] == username and user['password'] == password), None)
 
         if username == "" or password == "":
             messagebox.showerror("Error", "All fields are required.")
-        elif valid_credentials:
+        elif user and user['role'] == 1:
             messagebox.showinfo("Login Success", "Welcome to Student Management System.")
             self.open_student_management_system()
+        elif user:
+            messagebox.showinfo("Access Denied", "You do not have the required permissions to access this system.")
         else:
             messagebox.showerror("Error", "Invalid username and password.")
     
