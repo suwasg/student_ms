@@ -19,14 +19,14 @@ class LoginWindow:
         self.lbl_bg.place(x=0, y=0, relwidth=1, relheight=1)
 
         self.frame = Frame(self.root, bg='yellow')
-        self.frame.place(x=500, y=150, width=340, height=450)
+        self.frame.place(x=500, y=180, width=340, height=350)
 
 
         img1= Image.open(r"images\loginIcon.png")
         img1=img1.resize((100,100), Image.LANCZOS)
         self.photo_img1= ImageTk.PhotoImage(img1)
         self.lbl_img1 = Label(image=self.photo_img1, bg="yellow", borderwidth=0)
-        self.lbl_img1.place(x=620, y=155, width=100, height=100)
+        self.lbl_img1.place(x=620, y=185, width=100, height=100)
 
         get_started = Label(self.frame, text="Welcome", font=("times new roman", 25, "bold"), fg="black", bg="yellow")
         get_started.place(x=100, y=105)
@@ -49,13 +49,13 @@ class LoginWindow:
         img2=img2.resize((25,25), Image.LANCZOS)
         self.photo_img2= ImageTk.PhotoImage(img2)
         self.lbl_img2 = Label(image=self.photo_img2, bg="yellow", borderwidth=0)
-        self.lbl_img2.place(x=540, y=300, width=25, height=25)
+        self.lbl_img2.place(x=540, y=330, width=25, height=25)
 
         img3= Image.open(r"C:\Users\Acer\Desktop\projects_2024\tkinter\login\images\pass.png")
         img3=img3.resize((25,25), Image.LANCZOS)
         self.photo_img3= ImageTk.PhotoImage(img3)
         self.lbl_img3 = Label(image=self.photo_img3, bg="yellow", borderwidth=0)
-        self.lbl_img3.place(x=540, y=360, width=25, height=25)
+        self.lbl_img3.place(x=540, y=390, width=25, height=25)
 
         login_btn = Button(self.frame, text="Login",command=self.login, font=("times new roman", 15 , "bold"),fg='white', bg='blue', bd=3, relief=RIDGE, activeforeground="white", activebackground="blue")
         login_btn.place(x=110, y=300, width=120)
