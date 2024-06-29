@@ -3,7 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-from student import StudentManagementSystem
+from student import StudentManagementSystem # import StudentManagementSystem class from the student.py file
 class LoginWindow:
     def __init__(self, root):
         self.root = root
