@@ -3,6 +3,7 @@ from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
+from student import StudentManagementSystem
 class LoginWindow:
     def __init__(self, root):
         self.root = root
@@ -60,8 +61,21 @@ class LoginWindow:
             messagebox.showerror("Error", "All fields are required.")
         elif self.txt_user.get() == "admin" and self.txt_pass.get() == "admin@789":
             messagebox.showinfo("Login Success", "Welcome to Student Management System.")
+            self.open_student_management_system()
         else:
             messagebox.showerror("Error", "Invalid username and password.")
+    
+    def open_student_management_system(self):
+        "open the student management system"
+        # Destroy all widgets in the frame and root
+        self.lbl_bg.destroy()
+        self.frame.destroy()
+        self.lbl_img1.destroy()
+        self.lbl_img2.destroy()
+        self.lbl_img3.destroy()
+
+        # Initialize the Student Management System in the same root window
+        self.app = StudentManagementSystem(self.root)
 
 if __name__ == '__main__':
     root = Tk()
