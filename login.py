@@ -65,7 +65,10 @@ class LoginWindow:
         
         username = self.txt_user.get()
         password = self.txt_pass.get()
-        
+
+         # Check if the credentials are valid
+        valid_credentials = any(user['username'] == username and user['password'] == password for user in credentials['users'])
+
         if self.txt_user.get() == "" or self.txt_pass.get() == "":
             messagebox.showerror("Error", "All fields are required.")
         elif self.txt_user.get() == "admin" and self.txt_pass.get() == "admin@789":
