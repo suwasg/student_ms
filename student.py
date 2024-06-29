@@ -1,11 +1,10 @@
 from tkinter import * 
-from PIL import Image, ImageTk 
+from PIL import Image, ImageTk  # pip install pillow
 import os
-import mysql.connector # mysql-connector-python
+import mysql.connector #pip install mysql-connector-python
 from tkinter import ttk, messagebox, filedialog
 import database_operations as db_ops
-from dotenv import load_dotenv
-import cv2
+from dotenv import load_dotenv # pip install python-dotenv
 
 # Load environment variables from .env file
 load_dotenv()
