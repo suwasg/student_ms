@@ -1,10 +1,13 @@
-
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
-from student import StudentManagementSystem # import StudentManagementSystem class from the student.py file
 import json
+# Import StudentManagementSystem class from the student.py file
+try:
+    from student import StudentManagementSystem
+except ImportError:
+    StudentManagementSystem = None
 class LoginWindow:
     def __init__(self, root):
         self.root = root
@@ -81,6 +84,9 @@ class LoginWindow:
     
     def open_student_management_system(self):
         "open the student management system"
+        if StudentManagementSystem is None:
+            messagebox.showerror("Error", "Student management system module is not available.")
+            return
         # Destroy all widgets in the frame and root
         self.lbl_bg.destroy()
         self.frame.destroy()
