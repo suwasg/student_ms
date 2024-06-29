@@ -2,7 +2,7 @@
 from tkinter import *
 from tkinter import ttk
 from PIL import Image, ImageTk
-
+from tkinter import messagebox
 class LoginWindow:
     def __init__(self, root):
         self.root = root
@@ -54,6 +54,14 @@ class LoginWindow:
 
         login_btn = Button(self.frame, text="Login", font=("times new roman", 15 , "bold"),fg='white', bg='blue', bd=3, relief=RIDGE, activeforeground="white", activebackground="blue")
         login_btn.place(x=110, y=300, width=120)
+
+    def login(self):
+        if self.txt_user.get() == "" or self.txt_pass.get() == "":
+            messagebox.showerror("Error", "All fields are required.")
+        elif self.txt_user.get() == "admin" and self.txt_pass.get() == "admin@789":
+            messagebox.showinfo("Login Success", "Welcome to Student Management System.")
+        else:
+            messagebox.showerror("Error", "Invalid username and password.")
 
 if __name__ == '__main__':
     root = Tk()
