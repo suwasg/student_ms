@@ -52,6 +52,8 @@ class LoginWindow:
         self.lbl_img3 = Label(image=self.photo_img3, bg="yellow", borderwidth=0)
         self.lbl_img3.place(x=540, y=360, width=25, height=25)
 
+        login_btn = Button(self.frame, text="Login", font=("times new roman", 15 , "bold"),fg='white', bg='blue', bd=3, relief=RIDGE, activeforeground="white", activebackground="blue")
+        login_btn.place(x=110, y=300, width=120)
 
 if __name__ == '__main__':
     root = Tk()
