@@ -4,6 +4,7 @@ from tkinter import ttk
 from PIL import Image, ImageTk
 from tkinter import messagebox
 from student import StudentManagementSystem # import StudentManagementSystem class from the student.py file
+import json
 class LoginWindow:
     def __init__(self, root):
         self.root = root
@@ -57,6 +58,14 @@ class LoginWindow:
         login_btn.place(x=110, y=300, width=120)
 
     def login(self):
+        "Login Functionality"
+        # Load credentials from json file:
+        with open('credentials.json', 'r') as file:
+            credentials = json.load(file)
+        
+        username = self.txt_user.get()
+        password = self.txt_pass.get()
+        
         if self.txt_user.get() == "" or self.txt_pass.get() == "":
             messagebox.showerror("Error", "All fields are required.")
         elif self.txt_user.get() == "admin" and self.txt_pass.get() == "admin@789":
