@@ -265,7 +265,6 @@ class Student:
         right_frame=LabelFrame(manage_frame, bd=4, relief=RIDGE, padx=2, pady=4, fg="red",bg='white',  text="Student Information", font=("times new roman", 12, 'bold'))
         right_frame.place(x=585, y=10, width=610, height=470)
 
-
         # img_6
         img_6=Image.open(r"images\std2.png")
         img_6=img_6.resize((600, 170), Image.LANCZOS)
