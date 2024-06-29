@@ -18,7 +18,7 @@ db_password = os.getenv('DB_PASSWORD')
 db_name = os.getenv('DB_NAME')
 
 
-class Student:
+class StudentManagementSystem:
     def __init__(self, root):
         self.root=root 
 
@@ -669,5 +669,5 @@ class Student:
  
 if __name__=="__main__":
     root=Tk()
-    obj=Student(root)
+    obj=StudentManagementSystem(root)
     root.mainloop()
