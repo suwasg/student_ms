@@ -69,9 +69,9 @@ class LoginWindow:
          # Check if the credentials are valid
         valid_credentials = any(user['username'] == username and user['password'] == password for user in credentials['users'])
 
-        if self.txt_user.get() == "" or self.txt_pass.get() == "":
+        if username == "" or password == "":
             messagebox.showerror("Error", "All fields are required.")
-        elif self.txt_user.get() == "admin" and self.txt_pass.get() == "admin@789":
+        elif valid_credentials:
             messagebox.showinfo("Login Success", "Welcome to Student Management System.")
             self.open_student_management_system()
         else:
