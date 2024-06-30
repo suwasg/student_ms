@@ -20,13 +20,10 @@ db_name = os.getenv('DB_NAME')
 class StudentManagementSystem:
     def __init__(self, root):
         self.root=root 
-
         # geometry
         root.geometry("1400x750+0+0")
-        # self.root.geometry("1400x750+0+0")
         # title
         root.title("STUDENT MANAGEMENT SYSTEM")
-
         # variables
         self.var_dept=StringVar()
         self.var_course=StringVar()
@@ -42,7 +39,6 @@ class StudentManagementSystem:
         self.var_phone=StringVar()
         self.var_address=StringVar()
         self.var_teacher=StringVar()
-        
 
         # first image
         img=Image.open(r"images\std1.png")
@@ -81,11 +77,9 @@ class StudentManagementSystem:
         label_title=Label(bg_label, text="STUDENT MANAGEMENT SYSTEM", font=("times new roman", 30, "bold"), fg="blue", bg="yellow", pady=5)
         label_title.place(x=0, y=0, width=1450, height=50)
         
-
         # manage frame
         manage_frame=Frame(bg_label, bd=2, relief=RIDGE, bg='white')
         manage_frame.place(x=25, y=55, width=1220, height=500)
-
 
         # left frame
         left_frame=LabelFrame(manage_frame, bd=4, relief=RIDGE, padx=2, pady=4, fg="red",bg='white',  text="Student Information", font=("times new roman", 12, 'bold'))
@@ -135,7 +129,6 @@ class StudentManagementSystem:
         current_year_combo.current(0)
         current_year_combo.grid(row=1, column=1, padx=2, pady=4, sticky=W) # sticky=West
 
-
         # semester
         semester_label=Label(std_label_info_frame, text="Semester", font=("poppins", 12, 'bold'), bg="white", fg="black" )
         semester_label.grid(row=1, column=2, padx=2, sticky=W)
@@ -175,7 +168,6 @@ class StudentManagementSystem:
         sec_combo.current(0)
         sec_combo.grid(row=1, column=1, sticky=W, padx=2,pady=4)
 
-
         # roll
         roll_label=Label(std_label_class_frame, text="Roll No", font=("arial", 12, 'bold'), bg="white", fg="black" )
         roll_label.grid(row=1, column=2, padx=2,pady=4, sticky=W)
@@ -183,7 +175,6 @@ class StudentManagementSystem:
         # name entry field
         roll_entry=ttk.Entry(std_label_class_frame, textvariable=self.var_roll,font=("arial", 12, 'bold'), width=15 )
         roll_entry.grid(row=1, column=3, sticky=W, padx=2, pady=4)
-
 
         # gender
         gender_label=Label(std_label_class_frame, text="Gender", font=("poppins", 12, 'bold'), bg="white", fg="black" )
@@ -194,7 +185,6 @@ class StudentManagementSystem:
         gender_combo.current(0)
         gender_combo.grid(row=2, column=1, sticky=W, padx=2,pady=4)
         
-
         # dob
         dob_label=Label(std_label_class_frame, text="DOB", font=("arial", 12, 'bold'), bg="white", fg="black" )
         dob_label.grid(row=2, column=2, padx=2,pady=4, sticky=W)
@@ -235,13 +225,10 @@ class StudentManagementSystem:
         teacher_entry=ttk.Entry(std_label_class_frame, textvariable=self.var_teacher, font=("arial", 12, 'bold'), width=15 )
         teacher_entry.grid(row=4, column=3, sticky=W, padx=2, pady=4)
 
-
-
         # button frame
         btn_frame=Frame(left_frame, bd=2, relief=RIDGE, bg='white')
         btn_frame.place(x=0, y=400, width=650, height=38)
 
-        
         btn_add=Button(btn_frame, text="Save", command=self.add_data,font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
         btn_add.grid(row=0, column=0, padx=4, )
         
@@ -253,12 +240,6 @@ class StudentManagementSystem:
 
         btn_reset=Button(btn_frame, text="Reset", command=self.reset_data, font=("times new roman", 12, 'bold'), width=13, bg='blue', fg='white')
         btn_reset.grid(row=0, column=3, padx=4, )
-
-
-
-
-
-
 
         # right frame
         right_frame=LabelFrame(manage_frame, bd=4, relief=RIDGE, padx=2, pady=4, fg="red",bg='white',  text="Student Information", font=("times new roman", 12, 'bold'))
@@ -318,7 +299,7 @@ class StudentManagementSystem:
         scroll_x.config(command=self.student_table.xview)
         scroll_y.config(command=self.student_table.yview)
 
-        # 
+        # table headings
         self.student_table.heading('id', text='StudentId')
         self.student_table.heading('dept', text='Department')
         self.student_table.heading('course', text='Course')
@@ -356,8 +337,6 @@ class StudentManagementSystem:
         self.student_table.bind("<ButtonRelease>", self.get_cursor)
         self.fetch_data()
         
-    
-
     def add_data(self):
         'function to add data to db'
         # db_ops.add_data(self)
@@ -469,7 +448,6 @@ class StudentManagementSystem:
                         self.var_address.get(),
                         self.var_teacher.get(),
                         self.var_std_id.get()
-
                     )
                     )
                 else:
@@ -617,7 +595,6 @@ class StudentManagementSystem:
                 title="Open Images",
                 filetypes=(('JPG File', "*.jpg"), ("PNG File", "*.png"), ("JPEG File", "*.jpeg"), ("All Files", "*.*"))
             )
-
             # Check if a file was selected
             if flnm2:
                 # Open and resize the selected image
