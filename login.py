@@ -9,11 +9,13 @@ try:
 except ImportError:
     StudentManagementSystem = None
 class LoginWindow:
-    def __init__(self, root):
+    def __init__(self, root, redirect_to_main=False):
         # Set the root window and its properties
         self.root = root
         self.root.title("Login")
         self.root.geometry("1400x750+0+0")
+
+        self.redirect_to_main = redirect_to_main
 
         # Load and display background image
         self.bg = ImageTk.PhotoImage(file=r'C:\Users\Acer\Desktop\projects_2024\tkinter\login\images\college1.png')
@@ -82,8 +84,10 @@ class LoginWindow:
         if username == "" or password == "":
             messagebox.showerror("Error", "All fields are required.")
         elif user and user['role'] == 1:
-            messagebox.showinfo("Login Success", "Welcome to Student Management System.")
-            self.open_student_management_system()
+            if self.redirect_to_main:
+                messagebox.showinfo("Login Success", "Welcome to Student Management System.")
+                self.open_student_management_system()
+            
         elif user:
             messagebox.showinfo("Access Denied", "You do not have the required permissions to access this system.")
         else:
